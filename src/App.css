@@ -1,0 +1,9 @@
+.main_page {
+  background: #fff;
+  text-align: center;
+  width: 100%;
+  max-width: 575px;
+  margin: 0 auto;
+  height: 100vh;
+  overflow: hidden;
+}
