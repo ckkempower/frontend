@@ -3,7 +3,7 @@ const StatusSection = ({ statusArray }) => {
     <div className="status_section">
       <div className="statue_img">
         {statusArray.map((status, index) => (
-          <div className="img_text">
+          <div className="img_text" key={index}>
             <img
               src={require(`../../../assets/images/${status.image}`)}
               className="img_circle"

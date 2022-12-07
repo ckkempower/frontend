@@ -2,7 +2,7 @@
 import "./styles.scss";
 
 // data
-import { profile, statusArray, empowerers } from "./data";
+import { profile, statusArray, empowerers, empowering } from "./data";
 
 // images
 import PowerCoin from "../../assets/icons/power-coin.png";
@@ -12,8 +12,14 @@ import profileG from "../../assets/icons/profile-f.png";
 import ProfileSection from "../../components/PlebeianComponents/ProfileSection";
 import StatusSection from "../../components/PlebeianComponents/StatusSection";
 import EmpowerList from "../../components/PlebeianComponents/EmpowerList";
+import { useState } from "react";
 
 const Plebeian = () => {
+  const [showEmpowerersTab, setShowEmpowerersTab] = useState(true);
+
+  const showEmpowerers = () => setShowEmpowerersTab(true);
+  const showEmpowering = () => setShowEmpowerersTab(false);
+
   return (
     <div className="plebeain_page">
       <ProfileSection profile={profile} />
@@ -27,22 +33,45 @@ const Plebeian = () => {
       </div>
       <div className="empowers">
         <div className="empowers_text">
-          <h4>
-            <strong>{empowerers.length} EMPOWERERS</strong>
+          <h4
+            onClick={showEmpowerers}
+            style={{ fontWeight: showEmpowerersTab ? "900" : "700" }}
+          >
+            {empowerers.length} EMPOWERERS
           </h4>
-          <h4>11 EMPOWERING</h4>
+          <h4
+            onClick={showEmpowering}
+            style={{ fontWeight: showEmpowerersTab ? "700" : "900" }}
+          >
+            {empowering.length} EMPOWERING
+          </h4>
         </div>
       </div>
       <div className="searchs">
         <input type="text" placeholder="Name Search" />
       </div>
       <p className="power_p">
-        Your EMPOWERERS Provide You 1.1{" "}
-        <img src={PowerCoin} alt="" className="power-icon" />
-        Today
+        {showEmpowerersTab ? (
+          <>
+            Your EMPOWERERS Provide You{" "}
+            {parseFloat(empowerers.length * 0.1).toFixed(1)}
+            <img src={PowerCoin} alt="" className="power-icon" />
+            Today
+          </>
+        ) : (
+          <>
+            You are providing your empowerers with a sum of{" "}
+            {empowering.length * 0.1}
+            <img src={PowerCoin} alt="" className="power-icon" /> daily
+          </>
+        )}
       </p>
 
-      <EmpowerList empowerers={empowerers} />
+      {showEmpowerersTab ? (
+        <EmpowerList empowerers={empowerers} />
+      ) : (
+        <EmpowerList empowerers={empowering} />
+      )}
     </div>
   );
 };

@@ -6,4 +6,21 @@
   margin: 0 auto;
   height: 100vh;
   overflow: hidden;
+  position: relative;
+  border: 1px solid #681d1d;
+}
+
+@media only screen and (min-width: 480px) {
+  .main_page {
+    overflow: inherit;
+    height: 100%;
+  }
+}
+@media only screen and (min-width: 767px) {
+  .main_page {
+    max-width: 775px;
+  }
+  body {
+    background: #eee;
+  }
 }

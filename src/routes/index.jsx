@@ -12,7 +12,7 @@ import Spent from "../pages/Spent";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Layout />} >
+      <Route path="/" element={<Layout />}>
         <Route path="earn" element={<Earn />} />
         <Route path="ranks" element={<Ranks />} />
         <Route path="spent" element={<Spent />} />
