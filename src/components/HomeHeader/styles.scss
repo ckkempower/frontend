@@ -1,0 +1,29 @@
+header.home-header {
+  background-color: #681d1d;
+  padding: 5px 10px;
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .header-icon {
+      width: 100%;
+      max-width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+
+    p {
+      font-size: 20px;
+      color: #c9bf9a;
+    }
+    @media screen and (max-width: 400px) {
+      p {
+        font-size: 16px;
+      }
+      .header-icon {
+        max-width: 48px;
+        height: 50px;
+      }
+    }
+  }
+}

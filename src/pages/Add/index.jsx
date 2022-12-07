@@ -1,6 +1,12 @@
+import Header from "../../components/Header";
+
 const Add = () => {
-    return <div>Add</div>;
-  };
-  
-  export default Add;
-  
+  return (
+    <>
+      <Header />
+      <div>Add</div>
+    </>
+  );
+};
+
+export default Add;

@@ -33,6 +33,16 @@
   }
 }
 
+@media only screen and (max-width: 360px) {
+  .footer footer .footer-nav a .footer-icon {
+    max-width: 30px;
+    height: 30px;
+  }
+  .plebeain_page .icons_section .icons_img {
+    padding-top: 0;
+  }
+}
+
 @media only screen and (min-width: 480px) {
   .footer {
     position: inherit;

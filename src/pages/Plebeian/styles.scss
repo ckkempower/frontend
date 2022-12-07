@@ -263,6 +263,13 @@
     position: absolute;
     width: 0px !important;
   }
+  .plebeain_page .status_section .statue_img .img_text img.img_circle {
+    max-width: 40px;
+    height: 40px;
+  }
+  .plebeain_page .empowers_text h4 {
+    margin: 10px 0;
+  }
 }
 
 .status_section ::-webkit-scrollbar {

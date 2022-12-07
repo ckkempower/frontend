@@ -1,6 +1,12 @@
+import Header from "../../components/Header";
+
 const Spent = () => {
-    return <div>Spent</div>;
-  };
-  
-  export default Spent;
-  
+  return (
+    <>
+      <Header />
+      <div>Spent</div>
+    </>
+  );
+};
+
+export default Spent;
