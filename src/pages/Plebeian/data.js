@@ -230,3 +230,75 @@ export const empowering = [
     rating: "0.1",
   },
 ];
+
+export const likeVideos = [
+  { coins: 5 },
+  { coins: 15 },
+  { coins: 25 },
+  { coins: 10 },
+  { coins: 5 },
+  { coins: 50 },
+  { coins: 2 },
+  { coins: 5 },
+  { coins: 4 },
+  { coins: 5 },
+  { coins: 15 },
+  { coins: 25 },
+  { coins: 10 },
+  { coins: 5 },
+  { coins: 50 },
+  { coins: 2 },
+  { coins: 5 },
+  { coins: 4 },
+];
+
+export const videos = [
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+  {
+    coinsAssigned: 100,
+    coinsUsed: 70,
+  },
+];
