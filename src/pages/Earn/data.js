@@ -1,6 +1,6 @@
 export const posts = [
   {
-    coinsAssigned: 100,
+    coinsAssigned: 200,
     coinsUsed: 70,
     profilePic: "homeprofile.png",
     name: "Leonardo Johnston",

@@ -4,7 +4,6 @@ import "./styles.scss";
 // images
 import PowerCoinUser from "../../assets/icons/IconUser's&LocationpowerB.png";
 import ProgressBar from "../../components/ProgressBar";
-import sover from "../../assets/icons/sovereigns-a.png";
 import PowerCoin from "../../assets/icons/power-coin.png";
 import IconEmpowerersC from "../../assets/icons/IconPowerCoinF.png";
 import HomeHeader from "../../components/HomeHeader";
@@ -26,7 +25,8 @@ const Earn = () => {
             <div className="full" key={index}>
               <ProgressBar
                 bgcolor="orange"
-                progress={post.coinsAssigned - post.coinsUsed}
+                coinsUsed={post.coinsUsed}
+                coinsAssigned={post.coinsAssigned}
                 height={30}
               />
               <div className="home_profile">
@@ -41,7 +41,10 @@ const Earn = () => {
                   <div className="home-head">
                     <h2>{post.name}</h2>
                     <div className="content_botom">
-                      <img src={require(`../../assets/icons/${post.levelIcon}`)} alt="pro" />
+                      <img
+                        src={require(`../../assets/icons/${post.levelIcon}`)}
+                        alt="pro"
+                      />
                       <span>{post.level} </span>
                     </div>
                   </div>
