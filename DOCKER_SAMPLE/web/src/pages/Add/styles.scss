@@ -1,0 +1,112 @@
+.upload_screen {
+  text-align: left;
+  padding: 0 10px;
+  height: calc(100% - 140px);
+  overflow: auto;
+  .heading {
+    margin: 15px 0;
+    h2 {
+      margin: 0;
+    }
+  }
+  .form {
+    .form-group {
+      margin-bottom: 18px;
+      label {
+        width: 100%;
+        display: inline-block;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+      input {
+        width: 94%;
+        height: 34px;
+        border: 1px solid #999;
+        padding: 0 10px;
+        border-radius: 4px;
+      }
+      textarea#w3review {
+        width: 98% !important;
+        border: 1px solid #999;
+        border-radius: 6px;
+        padding: 5px;
+        height: 80px;
+        min-height: 32px;
+      }
+      .files {
+        position: relative;
+
+        input {
+          height: 80px;
+          opacity: 0;
+          border: 1px dotted #777;
+          z-index: 99;
+          position: relative;
+          cursor: pointer;
+        }
+        .ulpad_text {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          text-align: center;
+          border: 1px dotted #777;
+          border-radius: 4px;
+          height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1;
+          cursor: pointer;
+          h4 {
+            margin: 0;
+            color: #777;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+.form-group.cust_cls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  input {
+    width: 60% !important;
+    // margin: 0 15px;
+  }
+  .total_coins {
+    label {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+}
+
+.form-group.text-center {
+  text-align: center;
+  margin-top: 30px;
+}
+button.btn-sub {
+  background: #681d1d;
+  border: none;
+  color: #fff;
+  padding: 10px 45px;
+  border-radius: 5px;
+}
+
+@media screen and (min-width: 480px) {
+  .form-group.cust_cls {
+    input {
+      width: 80% !important;
+    }
+  }
+  .upload_screen .form .form-group input {
+    width: 96%;
+  }
+}

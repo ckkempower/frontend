@@ -1,0 +1,67 @@
+.videos {
+  margin-top: 12px;
+  display: inline-block;
+  width: 100%;
+  height: calc(100% - 320px);
+  overflow: auto;
+  .video_box {
+    background-color: #acadac;
+    padding: 0px;
+    position: relative;
+    height: 145px;
+    margin: 2px 2px;
+    width: 32%;
+    display: inline-block;
+    line-height: 100px;
+    position: relative;
+
+    .img_text-video {
+      position: absolute;
+      bottom: 10px;
+      line-height: 0;
+      display: flex;
+      align-items: center;
+      left: 10px;
+      img {
+        width: 100%;
+        max-width: 20px;
+        background-color: #fff;
+        border-radius: 20px;
+        padding: 4px;
+        margin-right: 5px;
+      }
+      span {
+        color: #fff;
+      }
+    }
+  }
+  .progress-parent {
+    z-index: 9;
+    bottom: -27px;
+    height: 20px !important;
+  }
+  .progress-parent .child .text {
+    line-height: 0;
+    top: 0;
+    .power-icons {
+      max-width: 16px;
+      top: 2px;
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .plebeain_page {
+    height: calc(100% - 140px);
+    min-height: calc(100% - 140px);
+    overflow: auto;
+  }
+}
+
+@media only screen and (min-width: 480px) {
+  .videos {
+    height: 100%;
+    min-height: 100%;
+    overflow: inherit;
+  }
+}

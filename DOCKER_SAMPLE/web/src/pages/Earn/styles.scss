@@ -1,0 +1,120 @@
+.home_page {
+  padding: 0 12px;
+  height: calc(100% - 140px);
+  overflow: auto;
+  p.power_home {
+    text-align: left;
+    margin: 0;
+    color: #8e774e;
+    font-weight: 600;
+    padding-bottom: 10px;
+  }
+  .home_profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .home-img-text {
+      display: flex;
+      justify-content: space-between;
+      text-align: left;
+      .home-img {
+        position: relative;
+        top: 0px;
+        img {
+          max-width: 70px;
+          top: 0;
+        }
+      }
+    }
+    .home-head {
+      margin-left: 4px;
+      margin-top: 10px;
+      h2 {
+        text-align: left;
+        margin: 0;
+        font-size: 14px;
+      }
+      .content_botom {
+        display: flex;
+        margin-top: 6px;
+        img {
+          width: 100%;
+          max-width: 20px;
+        }
+        span {
+          margin-top: 4px;
+          margin-left: 4px;
+          font-weight: 600;
+        }
+      }
+    }
+    .home-right {
+      width: 25%;
+      p {
+        margin-top: 0;
+        font-weight: 600;
+        color: #777;
+        position: relative;
+        top: -8px;
+        font-size: 14px;
+        margin-bottom: 4px;
+        line-height: 20px;
+      }
+    }
+  }
+  .full-img {
+    img {
+      width: 100%;
+    }
+    p {
+      text-align: left;
+      margin: 0;
+    }
+  }
+  .ul_div {
+    border-top: 1px solid #777;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      li {
+        text-align: center;
+        align-items: center;
+        margin-top: 10px;
+        cursor: pointer;
+        img {
+          width: 100%;
+          max-width: 30px;
+          margin-right: 5px;
+        }
+        span {
+          display: block;
+          // color: ;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 360px) {
+  .home_page .home_profile .home-img-text .home-img img {
+    max-width: 60px;
+  }
+  .home_page .home_profile .home-head .content_botom span {
+    font-size: 12px;
+  }
+  .home_page .home_profile .home-head h2 {
+    font-size: 12px;
+  }
+  .home_page .home_profile .home-right p {
+    font-size: 12px;
+  }
+  .home_page .home_profile .home-right {
+    width: 36%;
+  }
+  .home_page .home_profile {
+    margin-bottom: 10px;
+  }
+}

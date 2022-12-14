@@ -44,8 +44,7 @@ services:
             - ./dev.env
         volumes:
             - ./web/src:/usr/app/src
-            - ./shared:/usr/app/src/shared
-            - /usr/app/.svelte-kit
+            - ./web/public:/usr/app/src/public
             - /usr/app/node_modules
         depends_on:
             - server
