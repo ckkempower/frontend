@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "../Layout";
 import Add from "../pages/Add";
 import Earn from "../pages/Earn";
+import Login from "../pages/Login";
 import Plebeian from "../pages/Plebeian";
 import Ranks from "../pages/Ranks";
 import Spent from "../pages/Spent";
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route path="ranks" element={<Ranks />} />
         <Route path="spent" element={<Spent />} />
         <Route path="add" element={<Add />} />
+        <Route path="login" element={<Login />} />
         <Route index element={<Plebeian />} />
       </Route>
     </Routes>
