@@ -45,6 +45,9 @@ export class Account extends BaseEntity implements AccountType {
     state: string;
 
     @Column({ nullable: true })
+    county: string;
+
+    @Column({ nullable: true })
     pfp: string;
 
     @Column({ default: 10 })
@@ -78,6 +81,7 @@ export class Account extends BaseEntity implements AccountType {
         if (!account.country) return 'Country is required';
         if (!account.city) return 'City is required';
         if (!account.state) return 'State is required';
+        if (!account.county) return 'County is required';
         if (!account.pfp.file || !account.pfp.extension)
             return 'PFP is required';
         if (
