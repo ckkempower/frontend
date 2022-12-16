@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../common/utils";
 import Header from "../../components/Header";
-import { useYupValidationResolver } from "../Signup";
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 // styles
 import "./styles.scss";
 

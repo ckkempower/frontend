@@ -25,8 +25,8 @@
         padding: 0 10px;
         border-radius: 4px;
       }
-      textarea#w3review {
-        width: 98% !important;
+      textarea {
+        width: 97% !important;
         border: 1px solid #999;
         border-radius: 6px;
         padding: 5px;
@@ -63,17 +63,27 @@
             font-weight: 500;
           }
         }
+        img {
+          width: 100%;
+          margin: 10px 0px 10px 0px;
+          border-radius: 4px;
+        }
+        video {
+          width: 100%;
+        }
       }
     }
   }
 }
-
+.total_coins {
+  padding: 10px 10px 10px 0;
+}
 .form-group.cust_cls {
   display: flex;
   align-items: center;
   justify-content: space-between;
   input {
-    width: 60% !important;
+    width: 92% !important;
     // margin: 0 15px;
   }
   .total_coins {
@@ -99,14 +109,44 @@ button.btn-sub {
   padding: 10px 45px;
   border-radius: 5px;
 }
+.video_section video {
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 12px;
+  height: 250px;
+  max-width: 100%;
+}
+.video_section button {
+  background: transparent;
+  margin-right: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: #681d1d;
+  border: 1px solid #681d1d;
+}
+.video_section button:disabled {
+  opacity: 0.4;
+}
+.video_section p {
+  margin-bottom: 10px;
+}
+.flex-column {
+  width: 70%;
+}
 
 @media screen and (min-width: 480px) {
   .form-group.cust_cls {
     input {
-      width: 80% !important;
+      width: 96% !important;
     }
   }
   .upload_screen .form .form-group input {
     width: 96%;
+  }
+  .upload_screen .form .form-group textarea {
+    width: 98.7% !important;
+  }
+  .upload_screen .form .form-group input {
+    width: 97.5%;
   }
 }

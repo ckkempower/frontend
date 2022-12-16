@@ -5,41 +5,13 @@ import makeAnimated from "react-select/animated";
 import { useForm, Controller } from "react-hook-form";
 import "./style.scss";
 import { errorMessages, schema } from "../../common/utils";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { cities, counties, countries, states } from "./data";
 import { useNavigate } from "react-router-dom";
-
-export const useYupValidationResolver = (validationSchema) =>
-  useCallback(
-    async (data) => {
-      try {
-        const values = await validationSchema.validate(data, {
-          abortEarly: false,
-        });
-
-        return {
-          values,
-          errors: {},
-        };
-      } catch (errors) {
-        return {
-          values: {},
-          errors: errors.inner.reduce(
-            (allErrors, currentError) => ({
-              ...allErrors,
-              [currentError.path]: {
-                type: currentError.type ?? "validation",
-                message: currentError.message,
-              },
-            }),
-            {}
-          ),
-        };
-      }
-    },
-    [validationSchema]
-  );
+import { useDispatch } from "react-redux";
+import { addDetails } from "../../redux/sharedSlices/user";
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 
 const Signup = () => {
   const [pfp, setPfp] = useState({
@@ -48,6 +20,8 @@ const Signup = () => {
   });
 
   const [profilePicErr, setProfilePicErr] = useState("");
+
+  const dispatch = useDispatch();
 
   const animatedComponents = makeAnimated();
 
@@ -90,11 +64,9 @@ const Signup = () => {
         type: "success",
       });
 
+      dispatch(addDetails(responseData));
       navigate("/");
     }
-    // if (responseData.token) {
-    //     localStorage.setItem('token', responseData.token);
-    // }
   };
 
   const handleFileInput = (e) => {
