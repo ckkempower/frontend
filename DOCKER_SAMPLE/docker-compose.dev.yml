@@ -31,6 +31,7 @@ services:
             - ./globals.env
             - ./server/.env
             - ./dev.env
+        restart: always
         depends_on:
             - db
         links:
@@ -43,9 +44,10 @@ services:
         env_file:
             - ./dev.env
         volumes:
-            - ./web/src:/usr/app/src
-            - ./web/public:/usr/app/src/public
+            - ./web/src:/app/src
+            - ./web/public:/app/src/public
             - /usr/app/node_modules
+        restart: always
         depends_on:
             - server
         ports:
