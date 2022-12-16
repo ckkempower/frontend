@@ -11,6 +11,13 @@
   border-bottom: 0;
 }
 
+.error-mesage {
+  text-align: left;
+  font-size: 13px;
+  color: red;
+  display: block;
+}
+
 @media only screen and (min-width: 480px) {
   .main_page {
     overflow: inherit;
@@ -23,5 +30,12 @@
   }
   body {
     background: #eee;
+  }
+}
+
+@media screen and (max-width: 48px) {
+  .Toastify__toast {
+    width: 60%;
+
   }
 }
