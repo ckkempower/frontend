@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../common/utils";
 import Header from "../../components/Header";
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+import { addDetails } from "../../redux/sharedSlices/user";
 // styles
 import "./styles.scss";
 
@@ -20,9 +22,10 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
-    const response = await fetch("http://localhost/api/account/login", {
+    const response = await fetch("/api/account/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,9 +41,10 @@ const Login = () => {
         type: "error",
       });
     } else {
-      toast("Sign up successfull", {
+      toast("Sign in successfully", {
         type: "success",
       });
+      dispatch(addDetails(responseData));
       navigate("/");
     }
     // if (data.message) {
