@@ -1,15 +1,11 @@
 // Library components
 import { Link } from "react-router-dom";
+import useAuthentication from "../../hooks/useAuthentication";
 
 // styles
 import "./styles.scss";
 
 const links = [
-  {
-    icon: "users-locations-power-d.png",
-    route: "/earn",
-    text: "Earn",
-  },
   {
     icon: "videos-power-d.png",
     route: "/spent",
@@ -33,12 +29,25 @@ const links = [
 ];
 
 const Footer = () => {
+  const { isAuthenticate, redirectToLogin } = useAuthentication();
+
   return (
     <div className="footer">
       <footer>
         <nav className="footer-nav">
+          <Link to={"/"}>
+            <img
+              src={require(`../../assets/icons/users-locations-power-d.png`)}
+              alt=""
+              className={`footer-icon `}
+            />
+            <p>{"Earn"}</p>
+          </Link>
           {links.map((link, index) => (
-            <Link to={link.route} key={index}>
+            <Link
+              to={isAuthenticate ? link.route : redirectToLogin}
+              key={index}
+            >
               <img
                 src={require(`../../assets/icons/${link.icon}`)}
                 alt=""

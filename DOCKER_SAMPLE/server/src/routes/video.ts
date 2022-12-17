@@ -6,9 +6,11 @@ import { requireAuth } from './utils/requireAuth';
 import fs from 'fs';
 import { getJWTPayload } from '../utils/parseJWT';
 import { transferPower } from '../utils/transferPower';
+import { writeFile } from './file';
 export const video = Router();
 
 video.post('/', requireAuth, upload.single('file'), async (req, res) => {
+    console.log(req.body);
     if (!req?.file?.filename) {
         res.status(400).json({ message: 'No file provided' });
         return;
@@ -44,7 +46,17 @@ video.post('/', requireAuth, upload.single('file'), async (req, res) => {
         return;
     }
 
+    const message = Video.validate(req.body);
+    if(message) {
+        res.status(400).json({
+            message,
+        });
+        return;
+    }
+
     const video = new Video();
+    req.body.thumbnail = typeof req.body.thumbnail == 'string' ? JSON.parse(req.body.thumbnail) : req.body.thumbnail;
+    video.thumbnail = writeFile(req.body.thumbnail.file, req.body.thumbnail.extension);
     //remove extension from filename
     const tokens = req.file.filename.split('.');
     tokens.pop();
@@ -53,6 +65,9 @@ video.post('/', requireAuth, upload.single('file'), async (req, res) => {
     video.groupId = account.group.id;
     video.account = account;
     video.url = url;
+    const { title, description } = req.body;
+    video.title = title;
+    video.description = description;
     let [_, err] = transferPower(video.account, video, power);
     if (err != null) console.error(err.message);
 

@@ -47,6 +47,7 @@ export type VideoType = WithPower & {
   url: string;
   groupId: number;
   title: string;
+  thumbnail?: string;
   description: string;
   account: AccountType;
   createdAt?: Date;

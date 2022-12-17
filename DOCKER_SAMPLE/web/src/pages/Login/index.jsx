@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../common/utils";
 import Header from "../../components/Header";
-import { useYupValidationResolver } from "../Signup";
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 // styles
 import "./styles.scss";
 
@@ -18,6 +18,8 @@ const Login = () => {
     mode: "onBlur",
     resolver: validationResolver,
   });
+
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     const response = await fetch("http://localhost/api/account/login", {
@@ -39,6 +41,7 @@ const Login = () => {
       toast("Sign up successfull", {
         type: "success",
       });
+      navigate("/");
     }
     // if (data.message) {
     //     errorMessage = data.message;

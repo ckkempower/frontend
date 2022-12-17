@@ -50,7 +50,7 @@ export class Account extends BaseEntity implements AccountType {
     @Column({ nullable: true })
     pfp: string;
 
-    @Column({ default: 10 })
+    @Column({ default: 20 })
     power: number;
 
     @ManyToMany(() => Account)

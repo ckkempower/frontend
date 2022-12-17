@@ -5,40 +5,13 @@ import makeAnimated from "react-select/animated";
 import { useForm, Controller } from "react-hook-form";
 import "./style.scss";
 import { errorMessages, schema } from "../../common/utils";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { cities, counties, countries, states } from "./data";
-
-export const useYupValidationResolver = (validationSchema) =>
-  useCallback(
-    async (data) => {
-      try {
-        const values = await validationSchema.validate(data, {
-          abortEarly: false,
-        });
-
-        return {
-          values,
-          errors: {},
-        };
-      } catch (errors) {
-        return {
-          values: {},
-          errors: errors.inner.reduce(
-            (allErrors, currentError) => ({
-              ...allErrors,
-              [currentError.path]: {
-                type: currentError.type ?? "validation",
-                message: currentError.message,
-              },
-            }),
-            {}
-          ),
-        };
-      }
-    },
-    [validationSchema]
-  );
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addDetails } from "../../redux/sharedSlices/user";
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 
 const Signup = () => {
   const [pfp, setPfp] = useState({
@@ -47,6 +20,8 @@ const Signup = () => {
   });
 
   const [profilePicErr, setProfilePicErr] = useState("");
+
+  const dispatch = useDispatch();
 
   const animatedComponents = makeAnimated();
 
@@ -61,18 +36,27 @@ const Signup = () => {
     resolver: validationResolver,
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     if (!pfp.file) {
       return setProfilePicErr("Thumbnail is required");
     }
-
     const response = await fetch("http://localhost/api/account/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...data,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        password: data.password,
+        city: data.city.value,
+        country: data.country.value,
+        state: data.state.value,
+        county: data.county.value,
+        userName: data.userName,
         pfp,
       }),
     });
@@ -86,10 +70,10 @@ const Signup = () => {
       toast("Sign up successfull", {
         type: "success",
       });
+
+      dispatch(addDetails(responseData));
+      navigate("/");
     }
-    // if (responseData.token) {
-    //     localStorage.setItem('token', responseData.token);
-    // }
   };
 
   const handleFileInput = (e) => {
@@ -177,7 +161,7 @@ const Signup = () => {
             <Controller
               name="country"
               control={control}
-              placeholder="Enter Your Country"
+              placeholder="Enter Your Password"
               render={({ field }) => (
                 <Select
                   {...field}

@@ -42,14 +42,21 @@ const Signup = () => {
     if (!pfp.file) {
       return setProfilePicErr("Thumbnail is required");
     }
-
     const response = await fetch("http://localhost/api/account/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...data,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        password: data.password,
+        city: data.city.value,
+        country: data.country.value,
+        state: data.state.value,
+        county: data.county.value,
+        userName: data.userName,
         pfp,
       }),
     });

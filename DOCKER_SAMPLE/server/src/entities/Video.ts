@@ -26,6 +26,9 @@ export class Video extends BaseEntity implements VideoType {
     @Column({ nullable: true })
     description!: string;
 
+    @Column({ nullable: true })
+    thumbnail!: string;
+
     @Column({ default: 0 })
     power!: number;
 
@@ -38,6 +41,7 @@ export class Video extends BaseEntity implements VideoType {
     static validate(video: Video): string | null {
         if (!video.title) return 'Title is required';
         if (!video.description) return 'Description is required';
+        if (!video.thumbnail) return 'thumbnail is required';
         return null;
     }
 
