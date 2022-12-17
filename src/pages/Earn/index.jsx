@@ -8,8 +8,10 @@ import PowerCoin from "../../assets/icons/power-coin.png";
 import IconEmpowerersC from "../../assets/icons/IconPowerCoinF.png";
 import HomeHeader from "../../components/HomeHeader";
 import { posts } from "./data";
+import { useSelector } from "react-redux";
 
 const Earn = () => {
+  const user = useSelector((state) => state.user.value);
   return (
     <>
       <HomeHeader />
@@ -17,7 +19,7 @@ const Earn = () => {
         <p className="power_home">
           Your POWER Right Now Is
           <img src={PowerCoinUser} alt="" className="power-icon" />
-          45
+          {user.account.power}
         </p>
 
         {posts.map((post, index) => {
