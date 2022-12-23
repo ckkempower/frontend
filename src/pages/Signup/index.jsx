@@ -19,6 +19,7 @@ const Signup = () => {
     extension: "",
   });
 
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [profilePicErr, setProfilePicErr] = useState("");
 
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const Signup = () => {
         country: data.country.value,
         state: data.state.value,
         county: data.county.value,
-        userName: data.userName,
+        // userName: data.userName,
         pfp,
       }),
     });
@@ -85,6 +86,7 @@ const Signup = () => {
         const extension = file.name.split(".").pop();
         const fileData = e?.target?.result;
         if (!extension || !fileData) return;
+        setThumbnailPreview(fileData);
         setPfp({
           file: fileData,
           extension,
@@ -123,7 +125,7 @@ const Signup = () => {
               <span className="error-mesage">{errorMessages.lastName}</span>
             )}
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>User Name</label>
             <input
               type="text"
@@ -133,7 +135,7 @@ const Signup = () => {
             {errors?.userName && (
               <span className="error-mesage">{errorMessages.userName}</span>
             )}
-          </div>
+          </div> */}
           <div className="form-group">
             <label>Email</label>
             <input
@@ -247,6 +249,12 @@ const Signup = () => {
               )}
             </div>
           </div>
+          {Boolean(thumbnailPreview) && (
+            <>
+              <p>Uploaded Profile Pic</p>
+              <img src={thumbnailPreview} alt="Thumbnail preview" />
+            </>
+          )}
           <div className="form-group">
             <button className="submin_btn" type="submit">
               Sign Up

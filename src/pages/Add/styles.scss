@@ -82,6 +82,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
+  .empower {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    .form-group {
+      span {
+        display: inline-block;
+        margin-bottom: 5px;
+        img {
+          width: 100%;
+          max-width: 25px;
+        }
+        .bottom {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
   input {
     width: 92% !important;
     // margin: 0 15px;
@@ -134,10 +153,35 @@ button.btn-sub {
   width: 70%;
 }
 
+.class_coininput {
+  text-align: center;
+
+  input {
+    width: 100%;
+    max-width: 10%;
+    margin-left: 10px;
+  }
+}
+.flex-column.class_coininput label {
+  display: flex !important;
+  align-items: center;
+}
+.right_imgs {
+  h3 {
+    text-align: right;
+  }
+}
+
 @media screen and (min-width: 480px) {
   .form-group.cust_cls {
     input {
       width: 96% !important;
+    }
+    .flex-column.class_coininput label {
+      justify-content: center;
+    }
+    .error-mesage {
+      text-align: center;
     }
   }
   .upload_screen .form .form-group input {

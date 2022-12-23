@@ -20,9 +20,6 @@ export class Account extends BaseEntity implements AccountType {
     @Column({ unique: true })
     email: string;
 
-    @Column({ unique: true })
-    userName: string;
-
     @Column()
     password: string;
 
@@ -77,7 +74,6 @@ export class Account extends BaseEntity implements AccountType {
         if (!account.password) return 'Password is required';
         if (!account.firstName) return 'First name is required';
         if (!account.lastName) return 'Last name is required';
-        if (!account.userName) return 'User name is required';
         if (!account.country) return 'Country is required';
         if (!account.city) return 'City is required';
         if (!account.state) return 'State is required';
@@ -90,12 +86,6 @@ export class Account extends BaseEntity implements AccountType {
             })
         )
             return 'Email is already in use';
-        if (
-            await Account.findOne({
-                where: { userName: account.userName },
-            })
-        )
-            return 'User name is already in use';
 
         return null;
     }
@@ -124,8 +114,8 @@ export class Account extends BaseEntity implements AccountType {
     static sanatizePublic(account: Partial<Account>): AccountType {
         const copy = Account.sanatize(account) as Partial<Account>;
         delete copy.email;
-        delete copy.firstName;
-        delete copy.lastName;
+        // delete copy.firstName;
+        // delete copy.lastName;
         return copy as AccountType;
     }
 

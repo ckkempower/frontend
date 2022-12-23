@@ -11,6 +11,7 @@ import "./styles.scss";
 
 const Login = () => {
   const validationResolver = useYupValidationResolver(loginSchema);
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -22,7 +23,6 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     const response = await fetch("/api/account/login", {
@@ -41,10 +41,10 @@ const Login = () => {
         type: "error",
       });
     } else {
-      toast("Sign in successfully", {
+      dispatch(addDetails(responseData))
+      toast("Sign up successfull", {
         type: "success",
       });
-      dispatch(addDetails(responseData));
       navigate("/");
     }
     // if (data.message) {
@@ -89,6 +89,7 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <span onClick={()=>navigate("/signup")} className="sign_up">Sign up</span>
       </div>
     </>
   );

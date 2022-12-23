@@ -2,6 +2,12 @@
   padding: 0 12px;
   height: calc(100% - 140px);
   overflow: auto;
+  @media only screen and (min-width: 400px) {
+    height: calc(100% - 160px);
+  }
+  @media only screen and (min-width: 480px) {
+    height: calc(100vh - 140px);
+  }
   p.power_home {
     text-align: left;
     margin: 0;

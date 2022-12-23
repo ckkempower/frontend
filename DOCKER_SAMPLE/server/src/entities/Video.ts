@@ -41,7 +41,12 @@ export class Video extends BaseEntity implements VideoType {
     static validate(video: Video): string | null {
         if (!video.title) return 'Title is required';
         if (!video.description) return 'Description is required';
-        if (!video.thumbnail) return 'thumbnail is required';
+        return null;
+    }
+
+    static validatPowerAPI(body: any): string | null {
+        if (!body.power) return 'Power is required';
+        if (!body.videoId) return 'Video Id is required';
         return null;
     }
 

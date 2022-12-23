@@ -19,7 +19,6 @@ export type AccountType = WithPower & {
   firstName: string;
   lastName: string;
   email: string;
-  userName: string;
   country: string;
   city: string;
   state: string;
@@ -33,7 +32,6 @@ export type SignUpType = {
   firstName: string;
   lastName: string;
   email: string;
-  userName: string;
   password: string;
   country: string;
   city: string;

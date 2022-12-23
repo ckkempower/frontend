@@ -9,22 +9,28 @@ import * as yup from "yup";
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 import { toast } from "react-toastify";
 import powerCoin from "../../assets/icons/power-coin.png";
+import arrow from "../../assets/images/arrow.png";
 import { useNavigate } from "react-router";
 import { updateDetails } from "../../redux/sharedSlices/user";
 
 export const schema = yup.object({
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
-  assignedCoins: yup.string().required("Please assign some coins"),
+  // assignedCoins: yup.string().required("Please assign some coins"),
 });
 
 const Add = () => {
+  const user = useSelector((state) => state.user.value);
   const videoRefSave = useRef(null);
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnaiFile, setThumbnailFile] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [recordingStarted, setRecordingStarted] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [availableCoin, setAvailableCoin] = useState(user.account.power);
+  const [empowerCoin, setEmpowerCoin] = useState(0);
+  const [assignedCoins, setAssignedCoins] = useState(1);
+  const [assignedCoinsError, setAssignedCoinsError] = useState("");
 
   const validationResolver = useYupValidationResolver(schema);
 
@@ -39,8 +45,7 @@ const Add = () => {
 
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.user.value);
-  console.log(user, "US")
+ 
   const dispatch = useDispatch();
 
   const onSubmitForm = async (values) => {
@@ -59,12 +64,11 @@ const Add = () => {
         type: "error",
       });
     }
-
-    if (!thumbnaiFile) {
-      return toast("Please upload the video thumbnail", {
-        type: "error",
-      });
-    }
+    // if (!thumbnaiFile) {
+    //   return toast("Please upload the video thumbnail", {
+    //     type: "error",
+    //   });
+    // }
     const { title, description, assignedCoins } = values;
     if (assignedCoins <= 0) {
       return toast("Please assign at least 1 coin", {
@@ -80,8 +84,10 @@ const Add = () => {
     formData.append("file", videoToSend);
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("power", assignedCoins.toString());
-    formData.append("thumbnail", JSON.stringify(thumbnaiFile));
+    formData.append("power", empowerCoin.toString());
+    if (thumbnaiFile) {
+      formData.append("thumbnail", JSON.stringify(thumbnaiFile));
+    }
 
     setIsLoading(true);
 
@@ -94,7 +100,6 @@ const Add = () => {
       body: formData,
     });
     const response = await resUpload.json();
-    console.log(response, "REss");
     setIsLoading(false);
     if (response.message) {
       toast(response.message, {
@@ -104,7 +109,7 @@ const Add = () => {
       toast("Video added sccessfully", {
         type: "success",
       });
-      dispatch(updateDetails(response.video.account))
+      dispatch(updateDetails(response.video.account));
       navigate("/");
     }
   };
@@ -130,7 +135,48 @@ const Add = () => {
         });
       };
       reader.readAsDataURL(file);
-      // setThumbnailFile(file);
+      setThumbnailFile(file);
+    }
+  };
+
+  const onClickIncreaseDecrease = (condition = "") => {
+    if (assignedCoins > availableCoin) {
+      setAssignedCoinsError("");
+    }
+    if (condition === "available") {
+      if (availableCoin >= 0 && availableCoin !== 0) {
+        setAvailableCoin((prev) => {
+          if (prev > 0 && prev >= parseInt(assignedCoins)) {
+            return prev - parseInt(assignedCoins);
+          } else {
+            return prev;
+          }
+        });
+        setEmpowerCoin((prev) => {
+          if (prev >= 0 && availableCoin >= parseInt(assignedCoins)) {
+            return prev + parseInt(assignedCoins);
+          } else {
+            return prev;
+          }
+        });
+      }
+    } else {
+      if (empowerCoin >= 0 && empowerCoin !== 0) {
+        setAvailableCoin((prev) => {
+          if (prev >= 0 && empowerCoin >= parseInt(assignedCoins)) {
+            return prev + parseInt(assignedCoins);
+          } else {
+            return prev;
+          }
+        });
+        setEmpowerCoin((prev) => {
+          if (prev > 0 && prev >= parseInt(assignedCoins)) {
+            return prev - parseInt(assignedCoins);
+          } else {
+            return prev;
+          }
+        });
+      }
     }
   };
 
@@ -171,7 +217,11 @@ const Add = () => {
             <div className="form-group">
               <label>Upload Video</label>
               <div className="files">
-                <input type="file" onChange={handleVideoChange} />
+                <input
+                  type="file"
+                  accept="video/mp4,video/x-m4v,video/*"
+                  onChange={handleVideoChange}
+                />
                 <div className="ulpad_text">
                   <h4>Upload Video</h4>
                 </div>
@@ -251,31 +301,64 @@ const Add = () => {
               </div>
             </div>
             <div className="form-group cust_cls">
-              <div className="total_coins">
-                <label>Available Coins</label>
-                <h3>
-                  {user.account.power}
-                  <img src={powerCoin} alt="" className="power-icon" />
-                </h3>
-              </div>
-
-              <div className="flex-column">
-                <input
-                  type="number"
-                  placeholder="Coin"
-                  name="assignedCoins"
-                  {...register("assignedCoins", { required: true })}
-                />
-                {errors?.assignedCoins && (
-                  <span className="error-mesage">
-                    {errors.assignedCoins?.message}
+              <div className="empower">
+                <div className="total_coins">
+                  <label>Available Coins</label>
+                  <h3>
+                    <em>
+                      <img className="power-icon" src={powerCoin} />
+                    </em>
+                    {availableCoin}
+                  </h3>
+                </div>
+                <div className="form-group">
+                  <span onClick={() => onClickIncreaseDecrease("available")}>
+                    <img src={arrow} />
                   </span>
+                  <br />
+                  <span onClick={() => onClickIncreaseDecrease()}>
+                    <img src={arrow} className="bottom" />
+                  </span>
+                </div>
+                <div className="total_coins right_imgs">
+                  <label>Empower Coins</label>
+                  <h3>
+                    <em>
+                      <img className="power-icon" src={powerCoin} />
+                    </em>
+                    {empowerCoin}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex-column class_coininput">
+                <label>
+                  Coin to move
+                  <input
+                    type="number"
+                    placeholder="Coin"
+                    name="assignedCoins"
+                    value={assignedCoins}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      setAssignedCoins(value);
+                      if (value > availableCoin) {
+                        setAssignedCoinsError(
+                          `Value should be = or < ${availableCoin}`
+                        );
+                      } else {
+                        setAssignedCoinsError("");
+                      }
+                    }}
+                  />
+                </label>
+                {assignedCoinsError && (
+                  <span className="error-mesage">{assignedCoinsError}</span>
                 )}
               </div>
             </div>
 
             <div className="form-group text-center">
-              <button className="btn-sub" disabled={isLoading}>
+              <button type="submit" className="btn-sub" disabled={isLoading}>
                 Submit
               </button>
             </div>

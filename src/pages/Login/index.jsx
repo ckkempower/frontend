@@ -1,14 +1,17 @@
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../common/utils";
 import Header from "../../components/Header";
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+import { addDetails } from "../../redux/sharedSlices/user";
 // styles
 import "./styles.scss";
 
 const Login = () => {
   const validationResolver = useYupValidationResolver(loginSchema);
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -38,6 +41,7 @@ const Login = () => {
         type: "error",
       });
     } else {
+      dispatch(addDetails(responseData))
       toast("Sign up successfull", {
         type: "success",
       });
@@ -85,6 +89,7 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <span onClick={()=>navigate("/signup")} className="sign_up">Sign up</span>
       </div>
     </>
   );

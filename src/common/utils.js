@@ -8,7 +8,7 @@ export const schema = yup.object({
     .min(6, "Password is too short - should be 8 chars minimum."),
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
-  userName: yup.string().required("User name is required"),
+  // userName: yup.string().required("User name is required"),
   country: yup.object().required("Country is required."),
   county: yup.object().required("County is required."),
   state: yup.object().required("State is required."),
