@@ -107,7 +107,7 @@ const Add = () => {
     dispatch(startLoading());
 
     // upload
-    const resUpload = await fetch("http://localhost/api/video", {
+    const resUpload = await fetch("/api/video", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + user.token,

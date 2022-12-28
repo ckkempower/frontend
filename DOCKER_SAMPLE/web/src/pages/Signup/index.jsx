@@ -75,7 +75,7 @@ const Signup = () => {
     }
 
     dispatch(startLoading());
-    const response = await fetch("http://localhost/api/account/signup", {
+    const response = await fetch("/api/account/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

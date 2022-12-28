@@ -36,7 +36,7 @@ const Earn = () => {
   useEffect(() => {
     const getData = async () => {
       dispatch(startLoading());
-      const resUpload = await fetch("http://localhost/api/video", {
+      const resUpload = await fetch("/api/video", {
         method: "GET",
         headers: {
           Authorization: "Bearer " + user?.token,
@@ -62,7 +62,7 @@ const Earn = () => {
     }
     try {
       const response = await fetch(
-        "http://localhost/api/video/addPowerToVideo",
+        "/api/video/addPowerToVideo",
         {
           headers: {
             "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const Earn = () => {
     if (user?.token) {
       console.log("SDF", post);
       const response = await fetch(
-        "http://localhost/api/video/addPowerToAccount",
+        "/api/video/addPowerToAccount",
         {
           headers: {
             "Content-Type": "application/json",
