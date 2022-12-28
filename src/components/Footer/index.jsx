@@ -23,7 +23,7 @@ const links = [
   },
   {
     icon: "profile-d.png",
-    route: "/",
+    route: "/plebeian",
     text: "Plebeian",
   },
 ];
