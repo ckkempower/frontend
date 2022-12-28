@@ -1,22 +1,37 @@
-import Header from "../../components/Header";
-import { useForm } from "react-hook-form";
-import { ReactMediaRecorder } from "react-media-recorder";
-import "./styles.scss";
 import { useRef, useState } from "react";
-import VideoPreview from "../../components/videoPreview";
-import { useDispatch, useSelector } from "react-redux";
+
+// Library components
+import { ReactMediaRecorder } from "react-media-recorder";
 import * as yup from "yup";
-import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 import { toast } from "react-toastify";
+
+// Library hooks
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+
+// custom components
+import Header from "../../components/Header";
+import VideoPreview from "../../components/videoPreview";
+import LoaderSpiner from "../../components/Loader";
+
+// Custom Hooks
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+
+// Redux
+import { updateDetails } from "../../redux/sharedSlices/user";
+import { startLoading, stopLoading } from "../../redux/sharedSlices/loader";
+
+// Styles
+import "./styles.scss";
+
+// assets
 import powerCoin from "../../assets/icons/power-coin.png";
 import arrow from "../../assets/images/arrow.png";
-import { useNavigate } from "react-router";
-import { updateDetails } from "../../redux/sharedSlices/user";
 
 export const schema = yup.object({
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
-  // assignedCoins: yup.string().required("Please assign some coins"),
 });
 
 const Add = () => {
@@ -26,11 +41,12 @@ const Add = () => {
   const [thumbnaiFile, setThumbnailFile] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [recordingStarted, setRecordingStarted] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [availableCoin, setAvailableCoin] = useState(user.account.power);
   const [empowerCoin, setEmpowerCoin] = useState(0);
   const [assignedCoins, setAssignedCoins] = useState(1);
   const [assignedCoinsError, setAssignedCoinsError] = useState("");
+
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const validationResolver = useYupValidationResolver(schema);
 
@@ -45,7 +61,6 @@ const Add = () => {
 
   const navigate = useNavigate();
 
- 
   const dispatch = useDispatch();
 
   const onSubmitForm = async (values) => {
@@ -89,10 +104,10 @@ const Add = () => {
       formData.append("thumbnail", JSON.stringify(thumbnaiFile));
     }
 
-    setIsLoading(true);
+    dispatch(startLoading());
 
     // upload
-    const resUpload = await fetch("/api/video", {
+    const resUpload = await fetch("http://localhost/api/video", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + user.token,
@@ -100,7 +115,7 @@ const Add = () => {
       body: formData,
     });
     const response = await resUpload.json();
-    setIsLoading(false);
+    dispatch(stopLoading());
     if (response.message) {
       toast(response.message, {
         type: "error",
@@ -182,6 +197,7 @@ const Add = () => {
 
   return (
     <>
+      {isLoading && <LoaderSpiner />}
       <Header />
       <div className="upload_screen">
         <div className="heading">

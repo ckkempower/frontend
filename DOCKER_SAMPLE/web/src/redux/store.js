@@ -12,6 +12,7 @@ import storage from "redux-persist/lib/storage";
 
 // reducers
 import userReducer from "./sharedSlices/user";
+import loaderReducer from "./sharedSlices/loader";
 
 const persistConfig = {
   key: "root",
@@ -20,7 +21,10 @@ const persistConfig = {
   whitelist: ["user"],
 };
 
-const rootReducer = combineReducers({ user: userReducer });
+const rootReducer = combineReducers({
+  user: userReducer,
+  loader: loaderReducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({

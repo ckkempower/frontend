@@ -2,6 +2,18 @@
   padding: 0 12px;
   height: calc(100% - 140px);
   overflow: auto;
+
+  .vid_player {
+    height: 100%;
+    width: 100%;
+
+    iframe {
+      width: 100%;
+    }
+  }
+  .full {
+    padding-top: 10px;
+  }
   @media only screen and (min-width: 400px) {
     height: calc(100% - 160px);
   }
@@ -27,25 +39,31 @@
         position: relative;
         top: 0px;
         img {
-          max-width: 70px;
+          max-width: 60px;
           top: 0;
+          border-radius: 50%;
+          object-fit: cover;
+          height: 60px;
+          margin-right: 3px;
         }
       }
     }
     .home-head {
       margin-left: 4px;
-      margin-top: 10px;
+      margin-top: 2px;
+      text-transform: uppercase;
       h2 {
         text-align: left;
         margin: 0;
-        font-size: 14px;
+        font-size: 18px;
+        margin-top: 2px;
       }
       .content_botom {
         display: flex;
-        margin-top: 6px;
+        margin-top: 2px;
         img {
           width: 100%;
-          max-width: 20px;
+          max-width: 27px;
         }
         span {
           margin-top: 4px;

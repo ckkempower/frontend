@@ -1,17 +1,33 @@
+// Library Hooks
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loginSchema } from "../../common/utils";
+
+// Custom components
 import Header from "../../components/Header";
+
+// Library components
+import * as yup from "yup";
+
+// Redux
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 import { addDetails } from "../../redux/sharedSlices/user";
+import { startLoading, stopLoading } from "../../redux/sharedSlices/loader";
+
 // styles
 import "./styles.scss";
+import LoaderSpiner from "../../components/Loader";
+
+const loginSchema = yup.object({
+  email: yup.string().email().required("Email is required"),
+  password: yup.string().required("Password is required."),
+});
 
 const Login = () => {
+  const isLoading = useSelector((state) => state.loader.isLoading);
   const validationResolver = useYupValidationResolver(loginSchema);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -25,7 +41,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    const response = await fetch("/api/account/login", {
+    dispatch(startLoading());
+    const response = await fetch("http://localhost/api/account/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,13 +53,14 @@ const Login = () => {
     });
     const responseData = await response.json();
 
+    dispatch(stopLoading());
     if (responseData.message) {
       toast(responseData.message, {
         type: "error",
       });
     } else {
-      dispatch(addDetails(responseData))
-      toast("Sign up successfull", {
+      dispatch(addDetails(responseData));
+      toast("Login successfull", {
         type: "success",
       });
       navigate("/");
@@ -56,6 +74,7 @@ const Login = () => {
   };
   return (
     <>
+      {isLoading && <LoaderSpiner />}
       <Header />
       <div className="login">
         <h2>Login</h2>
@@ -89,7 +108,9 @@ const Login = () => {
             </button>
           </div>
         </form>
-        <span onClick={()=>navigate("/signup")} className="sign_up">Sign up</span>
+        <span onClick={() => navigate("/signup")} className="sign_up">
+          Sign up
+        </span>
       </div>
     </>
   );

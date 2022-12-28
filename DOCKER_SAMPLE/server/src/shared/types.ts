@@ -48,10 +48,20 @@ export type VideoType = WithPower & {
   thumbnail?: string;
   description: string;
   account: AccountType;
+  powerTransferred?: number;
   createdAt?: Date;
 };
 
 export type FileInputType = {
   file: string;
   extension: string;
+};
+
+export type PowerTransactionType = {
+  id?: number;
+  powerTranferred: number;
+  videoId: string;
+  userId: number;
+  type: string;
+  createdAt?: Date;
 };

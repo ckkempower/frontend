@@ -1,17 +1,46 @@
-import Header from "../../components/Header";
+import { useState } from "react";
+
+// Library components
+import * as yup from "yup";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-// styles
+
+// Library Hooks
 import { useForm, Controller } from "react-hook-form";
-import "./style.scss";
-import { errorMessages, schema } from "../../common/utils";
-import { useState } from "react";
 import { toast } from "react-toastify";
-import { cities, counties, countries, states } from "./data";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addDetails } from "../../redux/sharedSlices/user";
+import { useDispatch, useSelector } from "react-redux";
+
+// Custom Hooks
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+
+// Custom components
+import Header from "../../components/Header";
+import LoaderSpiner from "../../components/Loader";
+
+// Redux
+import { addDetails } from "../../redux/sharedSlices/user";
+import { startLoading, stopLoading } from "../../redux/sharedSlices/loader";
+
+// styles
+import "./style.scss";
+
+// data
+import { cities, counties, countries, states } from "./data";
+
+const schema = yup.object({
+  email: yup.string().email().required("Email is required"),
+  password: yup
+    .string()
+    .required("Password is required.")
+    .min(8, "Password is too short - should be 8 chars minimum."),
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  country: yup.object().required("Country is required."),
+  county: yup.object().required("County is required."),
+  state: yup.object().required("State is required."),
+  city: yup.object().required("City is required."),
+});
 
 const Signup = () => {
   const [pfp, setPfp] = useState({
@@ -23,6 +52,7 @@ const Signup = () => {
   const [profilePicErr, setProfilePicErr] = useState("");
 
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.loader.isLoading);
 
   const animatedComponents = makeAnimated();
 
@@ -43,6 +73,8 @@ const Signup = () => {
     if (!pfp.file) {
       return setProfilePicErr("Thumbnail is required");
     }
+
+    dispatch(startLoading());
     const response = await fetch("http://localhost/api/account/signup", {
       method: "POST",
       headers: {
@@ -57,11 +89,12 @@ const Signup = () => {
         country: data.country.value,
         state: data.state.value,
         county: data.county.value,
-        // userName: data.userName,
         pfp,
       }),
     });
     const responseData = await response.json();
+
+    dispatch(stopLoading());
 
     if (responseData.message) {
       toast(responseData.message, {
@@ -99,6 +132,7 @@ const Signup = () => {
 
   return (
     <>
+      {isLoading && <LoaderSpiner />}
       <Header />
       <div className="signUp">
         <h2>Sign Up</h2>
@@ -111,7 +145,7 @@ const Signup = () => {
               {...register("firstName", { required: true })}
             />
             {errors?.firstName && (
-              <span className="error-mesage">{errorMessages.firstName}</span>
+              <span className="error-mesage">{errors.firstName.message}</span>
             )}
           </div>
           <div className="form-group">
@@ -122,20 +156,9 @@ const Signup = () => {
               {...register("lastName", { required: true })}
             />
             {errors?.lastName && (
-              <span className="error-mesage">{errorMessages.lastName}</span>
+              <span className="error-mesage">{errors.lastName.message}</span>
             )}
           </div>
-          {/* <div className="form-group">
-            <label>User Name</label>
-            <input
-              type="text"
-              placeholder="Enter Your User Name"
-              {...register("userName", { required: true })}
-            />
-            {errors?.userName && (
-              <span className="error-mesage">{errorMessages.userName}</span>
-            )}
-          </div> */}
           <div className="form-group">
             <label>Email</label>
             <input
@@ -240,7 +263,7 @@ const Signup = () => {
           <div className="form-group">
             <label>Upload Profile Pic</label>
             <div className="files">
-              <input type="file" onChange={handleFileInput} />
+              <input type="file" accept="image/*" onChange={handleFileInput} />
               <div className="ulpad_text">
                 <h4>Upload Profile Pic</h4>
               </div>
@@ -252,7 +275,11 @@ const Signup = () => {
           {Boolean(thumbnailPreview) && (
             <>
               <p>Uploaded Profile Pic</p>
-              <img src={thumbnailPreview} alt="Thumbnail preview" />
+              <img
+                src={thumbnailPreview}
+                alt="Thumbnail preview"
+                className="preview-img"
+              />
             </>
           )}
           <div className="form-group">

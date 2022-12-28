@@ -19,6 +19,7 @@ export type AccountType = WithPower & {
   firstName: string;
   lastName: string;
   email: string;
+  // userName: string;
   country: string;
   city: string;
   state: string;
@@ -32,6 +33,7 @@ export type SignUpType = {
   firstName: string;
   lastName: string;
   email: string;
+  // userName: string;
   password: string;
   country: string;
   city: string;
@@ -45,7 +47,9 @@ export type VideoType = WithPower & {
   url: string;
   groupId: number;
   title: string;
+  thumbnail?: string;
   description: string;
+  powerTransferred?: number;
   account: AccountType;
   createdAt?: Date;
 };
@@ -53,4 +57,13 @@ export type VideoType = WithPower & {
 export type FileInputType = {
   file: string;
   extension: string;
+};
+
+export type PowerTransactionType = {
+  id?: number;
+  powerTranferred: number;
+  videoId: string;
+  userId: number;
+  type: string;
+  createdAt?: Date;
 };

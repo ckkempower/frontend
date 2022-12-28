@@ -1,74 +1,77 @@
 import {
-    BaseEntity,
-    Entity,
-    Column,
-    CreateDateColumn,
-    ManyToOne,
-    PrimaryColumn,
-} from 'typeorm';
-import { AccountType, VideoType } from '../shared/types';
-import { Account } from './Account';
+  BaseEntity,
+  Entity,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
+import { AccountType, VideoType } from "../shared/types";
+import { Account } from "./Account";
 
 @Entity()
 export class Video extends BaseEntity implements VideoType {
-    @PrimaryColumn()
-    id!: string;
+  @PrimaryColumn()
+  id!: string;
 
-    @Column()
-    url!: string;
+  @Column()
+  url!: string;
 
-    @Column()
-    groupId!: number;
+  @Column()
+  groupId!: number;
 
-    @Column({ nullable: true })
-    title!: string;
+  @Column({ nullable: true })
+  title!: string;
 
-    @Column({ nullable: true })
-    description!: string;
+  @Column({ nullable: true })
+  description!: string;
 
-    @Column({ nullable: true })
-    thumbnail!: string;
+  @Column({ nullable: true })
+  thumbnail!: string;
 
-    @Column({ default: 0 })
-    power!: number;
+  @Column({ default: 0 })
+  power!: number;
 
-    @ManyToOne(() => Account)
-    account!: Account;
+  @Column({ default: 0 })
+  powerTransferred!: number;
 
-    @CreateDateColumn()
-    createdAt!: Date;
+  @ManyToOne(() => Account)
+  account!: Account;
 
-    static validate(video: Video): string | null {
-        if (!video.title) return 'Title is required';
-        if (!video.description) return 'Description is required';
-        return null;
-    }
+  @CreateDateColumn()
+  createdAt!: Date;
 
-    static validatPowerAPI(body: any): string | null {
-        if (!body.power) return 'Power is required';
-        if (!body.videoId) return 'Video Id is required';
-        return null;
-    }
+  static validate(video: Video): string | null {
+    if (!video.title) return "Title is required";
+    if (!video.description) return "Description is required";
+    return null;
+  }
 
-    static sanatizePublic(video: Video): VideoType {
-        const copy = { ...video } as VideoType;
-        copy.account = Account.sanatizePublic(video.account);
-        return copy;
-    }
+  static validatPowerAPI(body: any): string | null {
+    if (!body.power) return "Power is required";
+    if (!body.videoId) return "Video Id is required";
+    return null;
+  }
 
-    static async createVideo(v: VideoType): Promise<Video> {
-        const video = new Video();
-        video.account = v.account as Account;
-        video.url = v.url;
-        video.title = v.title;
-        video.description = v.description;
-        await video.save();
-        return video;
-    }
+  static sanatizePublic(video: Video): VideoType {
+    const copy = { ...video } as VideoType;
+    copy.account = Account.sanatizePublic(video.account);
+    return copy;
+  }
 
-    static async getVideosByAccount(accountId: number): Promise<Video[]> {
-        return await Video.find({
-            where: { account: { id: accountId } },
-        });
-    }
+  static async createVideo(v: VideoType): Promise<Video> {
+    const video = new Video();
+    video.account = v.account as Account;
+    video.url = v.url;
+    video.title = v.title;
+    video.description = v.description;
+    await video.save();
+    return video;
+  }
+
+  static async getVideosByAccount(accountId: number): Promise<Video[]> {
+    return await Video.find({
+      where: { account: { id: accountId } },
+    });
+  }
 }
