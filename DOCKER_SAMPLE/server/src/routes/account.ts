@@ -42,18 +42,20 @@ account.get('/', requireAuth, async (req, res) => {
     });
 });
 
-account.get('/:id', async (req, res) => {
+account.get('/:id', requireAuth, async (req, res) => {
     const id = req.params.id;
 
-    const account = await Account.findOne({ where: { id } });
+    const account = await Account.findOne({ where: { id }, relations: ['followers'] });
     if (!account) {
         res.status(400).json({
             error: 'Account not found',
         });
         return;
     }
+    let youFollowing = account.followers.some((a) => a.id === req.user?.id);
     res.json({
         account: Account.sanatizePublic(account),
+        youFollowing
     });
 });
 account.get('/:id/followers', async (req, res) => {
@@ -69,11 +71,42 @@ account.get('/:id/followers', async (req, res) => {
         });
         return;
     }
-    const followers = account.followers.map((f) => f.id);
+    
+    const followers = account.followers.map(Account.sanatizePublic);
     res.json({
         followers,
     });
 });
+
+
+account.get('/:id/followings', async (req, res) => {
+    //find all of the follwers and return them as a list of ids
+    const id = req.params.id;
+    const accounts: Account[] = await Account.find({
+        relations: ['followers'],
+    });
+        
+    const followings = accounts.map((elem: any) => {
+        return new Promise((resolve, reject) => {
+            if(elem.followers.some((a: any) => a.id == id)) {
+                resolve(Account.sanatizePublic(elem));
+            }else {
+                resolve(null);
+            }
+        });
+    });
+
+    Promise.all(followings).then((result: any) => {
+        res.json({
+            followings: result.filter((x:any) => x),
+        });
+    }).catch(err => {
+        console.log(err);
+    })
+    
+});
+
+
 
 account.post('/login', async (req, res) => {
     const valid = await validate(req, res, Account.validateLogin);

@@ -2,19 +2,26 @@
   margin-top: 12px;
   display: inline-block;
   width: 100%;
-  height: calc(100% - 177px);
+  height: calc(100% - 220px);
   overflow: auto;
   .video_box {
     background-color: #acadac;
+    // background-color: transparent;
     padding: 0px;
     position: relative;
-    height: 145px;
-    margin: 2px 2px;
+    height: 150px;
+    margin: 3px 2px 5px;
     width: 32%;
     display: inline-block;
     line-height: 100px;
     position: relative;
-
+    .vid {
+      text-align: center;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .img_text-video {
       position: absolute;
       bottom: 10px;

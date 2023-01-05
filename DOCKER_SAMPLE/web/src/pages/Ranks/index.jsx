@@ -1,10 +1,13 @@
 import Header from "../../components/Header";
 
+// styles
+import "./styles.scss";
+
 const Ranks = () => {
   return (
     <>
       <Header />
-      <div>Ranks</div>
+      <div className="ranks">Ranks</div>
     </>
   );
 };

@@ -20,20 +20,19 @@ import LikesList from "../../components/PlebeianComponents/LikesList";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../redux/sharedSlices/loader";
 import LoaderSpiner from "../../components/Loader";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const Plebeian = () => {
+const UserProfile = () => {
   const [showEmpowerersTab, setShowEmpowerersTab] = useState(true);
 
   const [activeTab, setActiveTab] = useState("profile");
   const [userProfile, setUserProfile] = useState({});
-  const [userEmpower, setUserEmpower] = useState([]);
-  const [userEmpowering, setUserEmpowerings] = useState([]);
   const [userAllVideos, setUserAllVideos] = useState([]);
-  const [allLikedVideos, setAllLikedVideos] = useState([]);
   const user = useSelector((state) => state.user.value);
   const isLoading = useSelector((state) => state.loader.isLoading);
   const dispatch = useDispatch();
-
+  const {userId} = useParams();
   const showEmpowerers = () => setShowEmpowerersTab(true);
   const showEmpowering = () => setShowEmpowerersTab(false);
 
@@ -41,56 +40,19 @@ const Plebeian = () => {
     getUserAllVideo();
     setActiveTab("video");
   };
-  const handleLikesClick = () => {
-    setActiveTab("likes");
-    getAllLikedVideos();
-  };
+  const handleLikesClick = () => setActiveTab("likes");
   const handleProfileClick = () => setActiveTab("profile");
 
   useEffect(() => {
-    if (user?.token) {
+    if (userId) {
       getUserProfile();
-      getEmpowerers();
-      getEmpowerings();
     }
-  }, [user]);
-
-  const getEmpowerers = async () => {
-    dispatch(startLoading());
-    const resUpload = await fetch(
-      `/api/account/${user?.account?.id}/followers`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      }
-    );
-    const json = await resUpload.json();
-    setUserEmpower(json?.followers);
-    dispatch(stopLoading());
-  };
-
-  const getEmpowerings = async () => {
-    dispatch(startLoading());
-    const resUpload = await fetch(
-      `/api/account/${user?.account?.id}/followings`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      }
-    );
-    const json = await resUpload.json();
-    setUserEmpowerings(json?.followings);
-    dispatch(stopLoading());
-  };
+  }, [userId]);
 
   const getUserProfile = async () => {
     dispatch(startLoading());
     const resUpload = await fetch(
-      `/api/account/${user?.account?.id}`,
+      `/api/account/${userId}`,
       {
         method: "GET",
         headers: {
@@ -105,11 +67,8 @@ const Plebeian = () => {
 
   const getUserAllVideo = async () => {
     dispatch(startLoading());
-    const resUpload = await fetch("/api/video/me", {
+    const resUpload = await fetch(`/api/video/${userId}`, {
       method: "GET",
-      headers: {
-        Authorization: "Bearer " + user?.token,
-      },
     });
     const json = await resUpload.json();
     if (json.videos) {
@@ -118,99 +77,138 @@ const Plebeian = () => {
     dispatch(stopLoading());
   };
 
-  const getAllLikedVideos = async () => {
+  const follow =()=>{
+    if(userProfile?.youFollowing){
+      onUnFollow();
+    } else {
+      onFollow();
+    }
+  }
+
+  const onFollow = async () => {
     dispatch(startLoading());
-    const resUpload = await fetch(
-      `/api/video/${user?.account?.id}/empower`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      }
-    );
+    const resUpload = await fetch(`/api/account/follow`, {
+      headers:{
+        Authorization: "Bearer " + user.token,
+      },
+      method: "POST",
+      body: JSON.stringify({
+        id: userId
+      })
+    });
     const json = await resUpload.json();
-    if (json.videos) {
-      setAllLikedVideos(json?.videos);
+    if(json?.success){
+      getUserProfile();
+      toast(json.message, {
+        type: "success",
+      })
+    }else{
+      toast(json.message, {
+        type: "error",
+      })
+    }
+    dispatch(stopLoading());
+  };
+  
+  const onUnFollow = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(`/api/account/follow`, {
+      headers:{
+        Authorization: "Bearer " + user.token,
+        'Content-Type': 'application/json'
+      },
+      method: "DELETE",
+      body: JSON.stringify({
+        id: userId
+      })
+    });
+    const json = await resUpload.json();
+    if(json?.success){
+      getUserProfile();
+      toast(json.message, {
+        type: "success",
+      })
+    }else{
+      toast(json.message, {
+        type: "error",
+      })
     }
     dispatch(stopLoading());
   };
 
   const renderTabContent = () => {
     if (activeTab === "likes") {
-      return <LikesList likeVideos={allLikedVideos} />;
+      return <LikesList likeVideos={likeVideos} />;
     } else if (activeTab === "video") {
       return <VideoList videos={userAllVideos} />;
     } else {
       return (
         <>
-          <div className="empowers">
+          {/* <div className="empowers">
             <div className="empowers_text">
               <h4
                 onClick={showEmpowerers}
                 style={{ fontWeight: showEmpowerersTab ? "900" : "700" }}
               >
-                {userEmpower?.length} EMPOWERERS
+                {empowerers.length} EMPOWERERS
               </h4>
               <h4
                 onClick={showEmpowering}
                 style={{ fontWeight: showEmpowerersTab ? "700" : "900" }}
               >
-                {userEmpowering?.length} EMPOWERING
+                {empowering.length} EMPOWERING
               </h4>
             </div>
           </div>
-          {/* <div className="searchs">
+          <div className="searchs">
             <input type="text" placeholder="Name Search" />
-          </div> */}
+          </div>
           <p className="power_p">
             {showEmpowerersTab ? (
               <>
                 Your EMPOWERERS Provide You{" "}
-                {parseFloat(userEmpower?.length * 0.1).toFixed(1)}
+                {parseFloat(empowerers.length * 0.1).toFixed(1)}
                 <img src={PowerCoin} alt="" className="power-icon" />
                 Today
               </>
             ) : (
               <>
                 You are providing your empowerers with a sum of{" "}
-                {userEmpowering.length * 0.1}
+                {empowering.length * 0.1}
                 <img src={PowerCoin} alt="" className="power-icon" /> daily
               </>
             )}
-          </p>
+          </p> */}
 
-          {showEmpowerersTab ? (
-            <EmpowerList empowerers={userEmpower} />
+          {/* {showEmpowerersTab ? (
+            <EmpowerList empowerers={empowerers} />
           ) : (
-            <EmpowerList empowerers={userEmpowering} />
-          )}
+            <EmpowerList empowerers={empowering} />
+          )} */}
         </>
       );
     }
   };
-
+  
   return (
     <>
       <Header />
-      {isLoading ? (
-        <LoaderSpiner />
-      ) : (
-        <div className="plebeain_page">
-          <ProfileSection userProfile={userProfile} profile={userProfile} />
-          {/* <StatusSection statusArray={statusArray} /> */}
-          <div className="icons_section">
-            <div className="icons_img">
-              <img src={video} alt="video" onClick={handleVideoClick} />
-              <img src={power} alt="power" onClick={handleLikesClick} />
-              <img src={profileG} alt="" onClick={handleProfileClick} />
-            </div>
+      {isLoading ? <LoaderSpiner />:
+      <div className="plebeain_page">
+        <ProfileSection profile={userProfile} onFollow={follow} />
+        {/* <StatusSection statusArray={statusArray} /> */}
+        <div className="icons_section">
+          <div className="icons_img">
+            <img src={video} alt="video" onClick={handleVideoClick} />
+            <img src={power} alt="power" onClick={handleLikesClick} />
+            <img src={profileG} alt="" onClick={handleProfileClick} />
           </div>
-          {renderTabContent()}
         </div>
-      )}
+        {renderTabContent()}
+      </div>
+      }
     </>
   );
 };
 
-export default Plebeian;
+export default UserProfile;

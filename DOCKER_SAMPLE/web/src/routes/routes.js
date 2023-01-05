@@ -5,6 +5,7 @@ import Plebeian from "../pages/Plebeian";
 import Ranks from "../pages/Ranks";
 import Signup from "../pages/Signup";
 import Spent from "../pages/Spent";
+import UserProfile from "../pages/UserDetail";
 
 export const publicRoutes = [
   {
@@ -16,13 +17,17 @@ export const publicRoutes = [
     element: <Earn />,
   },
   {
-    path: "login",
+    path: "/login",
     element: <Login />,
   },
   {
     path: "/signUp",
     element: <Signup />,
   },
+  {
+    path: "/userProfile/:userId",
+    element: <UserProfile />,
+  }
 ];
 
 export const privateRoutes = [
@@ -31,19 +36,23 @@ export const privateRoutes = [
     element: <Earn />,
   },
   {
-    path: "plebeian",
+    path: "/plebeian",
     element: <Plebeian />,
   },
   {
-    path: "ranks",
+    path: "/userProfile/:userId",
+    element: <UserProfile />,
+  },
+  {
+    path: "/ranks",
     element: <Ranks />,
   },
   {
-    path: "spent",
+    path: "/spent",
     element: <Spent />,
   },
   {
-    path: "add",
+    path: "/add",
     element: <Add />,
   },
 ];

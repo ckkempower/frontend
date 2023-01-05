@@ -275,7 +275,11 @@ const Signup = () => {
           {Boolean(thumbnailPreview) && (
             <>
               <p>Uploaded Profile Pic</p>
-              <img src={thumbnailPreview} alt="Thumbnail preview" className="preview-img" />
+              <img
+                src={thumbnailPreview}
+                alt="Thumbnail preview"
+                className="preview-img"
+              />
             </>
           )}
           <div className="form-group">

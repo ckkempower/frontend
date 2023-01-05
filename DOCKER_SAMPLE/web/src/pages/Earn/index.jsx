@@ -36,13 +36,21 @@ const Earn = () => {
   useEffect(() => {
     const getData = async () => {
       dispatch(startLoading());
-      const resUpload = await fetch("/api/video", {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      });
-      const json = await resUpload.json();
+      let json = null;
+      if (user?.token) {
+        const resUpload = await fetch("/api/video", {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + user?.token,
+          },
+        });
+        json = await resUpload.json();
+      } else {
+        const resUpload = await fetch("/api/video/all", {
+          method: "GET",
+        });
+        json = await resUpload.json();
+      }
 
       dispatch(stopLoading());
       let updatePost = [...json.videos];
@@ -50,9 +58,30 @@ const Earn = () => {
         return { ...item, empower: 0 };
       });
       setAllPost(updatePost);
-      setAllPost(updatePost);
     };
     getData();
+  }, []);
+
+  const getUserProfile = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(
+      `/api/account/${user?.account?.id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + user?.token,
+        },
+      }
+    );
+    const json = await resUpload.json();
+    dispatch(updateDetails(json));
+    dispatch(stopLoading());
+  };
+
+  useEffect(() => {
+    if (user?.token) {
+      getUserProfile();
+    }
   }, []);
 
   const onClickEmpower = async (post, index) => {
@@ -79,7 +108,9 @@ const Earn = () => {
       let updatePost = [...allPost];
       updatePost[index]["empower"] = post?.empower + 1;
       updatePost[index]["power"] = json.video.power;
-      dispatch(updateDetails({ power: json.video.account.power }));
+      if (user?.account?.power > 0) {
+        dispatch(updateDetails({ power: user?.account?.power - 1 }));
+      }
       setAllPost(updatePost);
     } catch (err) {
       console.log(err.message, "MESSAGE");
@@ -89,7 +120,6 @@ const Earn = () => {
 
   const handleFullWatch = async (post, index) => {
     if (user?.token) {
-      console.log("SDF", post);
       const response = await fetch(
         "/api/video/addPowerToAccount",
         {
@@ -107,7 +137,6 @@ const Earn = () => {
 
       const json = await response.json();
 
-      console.log(json, "REsponse");
       if (response.status === 200) {
         const newPosts = [...allPost];
         newPosts[index].powerTransferred += 1;
@@ -116,6 +145,16 @@ const Earn = () => {
       }
     }
   };
+
+  const onClickProfile = (userId) => {
+    if (!user?.token) {
+      navigate("/login");
+      return toast("You have to login to see others profile");
+    }
+    navigate(`/userProfile/${userId}`);
+  };
+
+  console.log(user.account, "sdfsdf");
 
   return (
     <>
@@ -143,13 +182,13 @@ const Earn = () => {
                   <div className="home-img-text">
                     <div className="home-img">
                       <img
-                        src={"http://localhost" + post.account.pfp}
+                        src={post.account.pfp}
                         alt=""
                         className="power-icon"
                       />
                     </div>
                     <div className="home-head">
-                      <h2>
+                      <h2 onClick={() => onClickProfile(post?.account?.id)}>
                         {post.account.firstName + " " + post.account.lastName}
                       </h2>
                       <div className="content_botom">
