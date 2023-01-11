@@ -1,10 +1,13 @@
 import Header from "../../components/Header";
 
+// styles
+import "./styles.scss";
+
 const Spent = () => {
   return (
     <>
       <Header />
-      <div>Spent</div>
+      <div className="spents">Spent</div>
     </>
   );
 };

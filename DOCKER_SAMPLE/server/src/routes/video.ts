@@ -158,9 +158,15 @@ video.post('/', requireAuth, upload.single('file'), async (req, res) => {
 // });
 
 video.get('/all', async (req, res) => {
-    const videos = await Video.find({
-        relations: ['account']
-    });
+    // const videos = await Video.find({
+    //     where: { power : Not(0) },
+    //     relations: ['account']
+    // });
+
+    const videos = await Video.createQueryBuilder('video')
+    .where('video.power != video.powerTransferred')
+    .leftJoinAndSelect('video.account', 'account')
+    .getMany();
     res.json({
         videos: videos.map(Video.sanatizePublic),
     });
@@ -178,22 +184,18 @@ video.get('/:id/empower', async (req, res) => {
 
 video.get('/',requireAuth, async (req, res) => {
     const id = req.user?.id || 0;
-    const videos: Video[] = await Video.getVideosWithoutAccount(id);
+    const videos = await Video.createQueryBuilder('video')
+    .where('video.power != video.powerTransferred AND video.account.id != :id', {id})
+    .leftJoinAndSelect('video.account', 'account')
+    .getMany();
     res.json({
         videos: videos.map(Video.sanatizePublic),
     });
 });
 
-video.get('/me', requireAuth, async (req, res) => {
-    const payload = getJWTPayload(req, res);
-    if (!payload?.id) {
-        res.json({
-            message: 'No user found',
-            success: false,
-        });
-        return;
-    }
-    const videos = await Video.getVideosByAccount(payload.id);
+video.get('/user/:id', requireAuth, async (req, res) => {
+    const userId = Number(req.params.id);
+    const videos = await Video.getVideosByAccount(userId);
     res.json({
         videos: videos.map(Video.sanatizePublic),
         success: true,
@@ -282,7 +284,7 @@ video.post('/addPowerToAccount', requireAuth, async (req, res) => {
     }
     const power = parseInt(req.body.power);
     const video: any = await Video.findOne({ where: { id: req.body.videoId } });
-    if ((video.power < power) || (video.power <= video.powerTransferred)) {
+    if ((video.power < power)  || (video.powerTransferred == video.power)) {
         res.status(400).json({
             error: 'Not enough power',
         });
@@ -290,7 +292,7 @@ video.post('/addPowerToAccount', requireAuth, async (req, res) => {
     }
     
 
-    video.power -= power;
+    // video.power -= power;
     account.power += power;
     account = await account.save();
     video.powerTransferred += power;

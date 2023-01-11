@@ -7,7 +7,7 @@ import ProgressBar from "../../ProgressBar";
 // styles
 import "./styles.scss";
 
-const VideoList = ({ videos }) => {
+const VideoList = ({ videos, handleFullWatch = () => {} }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState({});
   const isLoading = useSelector((state) => state.loader.isLoading);
@@ -30,10 +30,7 @@ const VideoList = ({ videos }) => {
           <div className="video_box" key={index}>
             <div className="vid" onClick={() => openModal(video)}>
               {video.thumbnail ? (
-                <img
-                  src={"" + video.thumbnail}
-                  alt="thumbnail"
-                />
+                <img src={"" + video.thumbnail} alt="thumbnail" />
               ) : (
                 "Video"
               )}
@@ -60,6 +57,9 @@ const VideoList = ({ videos }) => {
           video={selectedVideo?.url}
           className="vid_player vid-modal"
           autopause
+          onEnd={() => {
+            handleFullWatch(selectedVideo);
+          }}
           width={300}
           height={200}
         />

@@ -1,38 +1,79 @@
-import profileF from "../../../assets/icons/profile-f.png";
-import userP from "../../../assets/icons/users-locations-power-a.png";
-import sover from "../../../assets/icons/sovereigns-a.png";
+import { ReactComponent as ProfileDark } from "../../../assets/icons/profile-dark.svg";
+import { ReactComponent as ProfileLight } from "../../../assets/icons/profile-light.svg";
+import { ReactComponent as EarnLight } from "../../../assets/icons/earn-light.svg";
+import { ReactComponent as LocationsLight } from "../../../assets/icons/locations-light.svg";
+import { ReactComponent as SovreignsLight } from "../../../assets/icons/sovreigns-light.svg";
+import { addDetails } from "../../../redux/sharedSlices/user";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-const ProfileSection = ({ profile }) => {
+const ProfileSection = ({ profile, onFollow = () => {} }) => {
+  const navigate= useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  
+  const onClickLogout= async()=>{
+    dispatch(addDetails({}));
+      navigate("/")
+    // const response = await fetch(
+    //   "http://localhost/api/account/logout",
+    //   {
+    //     headers: {
+    //       Authorization: "Bearer " + user.token,
+    //     },
+    //     method: "POST",
+    //   }
+    // );
+
+    // const json = await response.json();
+
+    // if (response.status === 200) {
+    //   dispatch(addDetails({}));
+    //   navigate("/")
+    // }
+  }
+
   return (
+    <>
+    <div className="logout_container form-group">
+      <button className="submin_btn"  onClick={()=>onClickLogout()} >Logout</button>
+    </div>
     <div className="profile_section">
       <div className="pro_img">
-        <img
-          src={require(`../../../assets/images/${profile.profilePic}`)}
-          alt="pro"
-        />
+        <img src={`http://localhost${profile?.account?.pfp}`} alt="pro" />
       </div>
       <div className="pro_content">
-        <h3>{profile.name}</h3>
+        <h3>{`${profile?.account?.firstName} ${profile?.account?.lastName}`}</h3>
         <div className="pro_sides">
           <div className="content_botom">
-            <img src={sover} alt="pro" />
-            <span>{profile.title} </span>
-          </div>
-          <div className="content_botom">
-            <img src={profileF} alt="pro" />
-            <span>{profile.earning} </span>
-          </div>
-          <div className="content_botom width_60">
-            <img src={sover} alt="pro" />
-            <span>{profile.address} </span>
+            <SovreignsLight />
+            <span>Legionary </span>
           </div>
           <div className="content_botom width_40">
-            <img src={userP} alt="pro" />
-            <span>{profile.plebeianScore} </span>
+            <EarnLight />
+            <span>{parseInt(profile?.account?.power)} </span>
+          </div>
+          <div className="content_botom width_60">
+            <LocationsLight />
+            <span>
+              {`${profile?.account?.city}, ${profile?.account?.country}, ${profile?.account?.state}, ${profile?.account?.country}`}{" "}
+            </span>
+          </div>
+          <div
+            className={
+              profile?.youFollowing
+                ? "is_follow content_botom"
+                : "content_botom"
+            }
+            onClick={() => onFollow()}
+          >
+            {profile?.youFollowing ? <ProfileDark /> : <ProfileLight />}
+            <span>{profile?.account?.followerCount} </span>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 };
 

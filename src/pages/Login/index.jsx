@@ -60,7 +60,7 @@ const Login = () => {
       });
     } else {
       dispatch(addDetails(responseData));
-      toast("Sign up successfull", {
+      toast("Log in successfull", {
         type: "success",
       });
       navigate("/");

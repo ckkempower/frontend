@@ -28,11 +28,15 @@ const UserProfile = () => {
 
   const [activeTab, setActiveTab] = useState("profile");
   const [userProfile, setUserProfile] = useState({});
+  const [userEmpower, setUserEmpower] = useState([]);
+  const [userEmpowering, setUserEmpowerings] = useState([]);
+  const [allLikedVideos, setAllLikedVideos] = useState([]);
+
   const [userAllVideos, setUserAllVideos] = useState([]);
   const user = useSelector((state) => state.user.value);
   const isLoading = useSelector((state) => state.loader.isLoading);
   const dispatch = useDispatch();
-  const {userId} = useParams();
+  const { userId } = useParams();
   const showEmpowerers = () => setShowEmpowerersTab(true);
   const showEmpowering = () => setShowEmpowerersTab(false);
 
@@ -40,26 +44,54 @@ const UserProfile = () => {
     getUserAllVideo();
     setActiveTab("video");
   };
-  const handleLikesClick = () => setActiveTab("likes");
+  const handleLikesClick = () => {
+    setActiveTab("likes");
+    getAllLikedVideos();
+  };
   const handleProfileClick = () => setActiveTab("profile");
 
   useEffect(() => {
     if (userId) {
       getUserProfile();
+      getEmpowerers();
+      getEmpowerings();
     }
   }, [userId]);
 
+  const getEmpowerers = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(`/api/account/${userId}/followers`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
+    });
+    const json = await resUpload.json();
+    setUserEmpower(json?.followers);
+    dispatch(stopLoading());
+  };
+
+  const getEmpowerings = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(`/api/account/${userId}/followings`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
+    });
+    const json = await resUpload.json();
+    setUserEmpowerings(json?.followings);
+    dispatch(stopLoading());
+  };
+
   const getUserProfile = async () => {
     dispatch(startLoading());
-    const resUpload = await fetch(
-      `/api/account/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      }
-    );
+    const resUpload = await fetch(`/api/account/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
+    });
     const json = await resUpload.json();
     setUserProfile(json);
     dispatch(stopLoading());
@@ -67,8 +99,11 @@ const UserProfile = () => {
 
   const getUserAllVideo = async () => {
     dispatch(startLoading());
-    const resUpload = await fetch(`/api/video/${userId}`, {
+    const resUpload = await fetch(`/api/video/user/${userId}`, {
       method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
     });
     const json = await resUpload.json();
     if (json.videos) {
@@ -77,136 +112,182 @@ const UserProfile = () => {
     dispatch(stopLoading());
   };
 
-  const follow =()=>{
-    if(userProfile?.youFollowing){
+  const getAllLikedVideos = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(`/api/video/${userId}/empower`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
+    });
+    const json = await resUpload.json();
+    if (json.videos) {
+      setAllLikedVideos(json?.videos);
+    }
+    dispatch(stopLoading());
+  };
+
+  const follow = () => {
+    if (userProfile?.youFollowing) {
       onUnFollow();
     } else {
       onFollow();
     }
-  }
+  };
 
   const onFollow = async () => {
     dispatch(startLoading());
     const resUpload = await fetch(`/api/account/follow`, {
-      headers:{
+      headers: {
         Authorization: "Bearer " + user.token,
       },
       method: "POST",
       body: JSON.stringify({
-        id: userId
-      })
+        id: userId,
+      }),
     });
     const json = await resUpload.json();
-    if(json?.success){
+    if (json?.success) {
       getUserProfile();
+      getEmpowerers();
       toast(json.message, {
         type: "success",
-      })
-    }else{
+      });
+    } else {
       toast(json.message, {
         type: "error",
-      })
-    }
-    dispatch(stopLoading());
-  };
-  
-  const onUnFollow = async () => {
-    dispatch(startLoading());
-    const resUpload = await fetch(`/api/account/follow`, {
-      headers:{
-        Authorization: "Bearer " + user.token,
-        'Content-Type': 'application/json'
-      },
-      method: "DELETE",
-      body: JSON.stringify({
-        id: userId
-      })
-    });
-    const json = await resUpload.json();
-    if(json?.success){
-      getUserProfile();
-      toast(json.message, {
-        type: "success",
-      })
-    }else{
-      toast(json.message, {
-        type: "error",
-      })
+      });
     }
     dispatch(stopLoading());
   };
 
+  const onUnFollow = async () => {
+    dispatch(startLoading());
+    const resUpload = await fetch(`/api/account/follow`, {
+      headers: {
+        Authorization: "Bearer " + user.token,
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+      body: JSON.stringify({
+        id: userId,
+      }),
+    });
+    const json = await resUpload.json();
+    if (json?.success) {
+      getUserProfile();
+      getEmpowerers();
+      toast(json.message, {
+        type: "success",
+      });
+    } else {
+      toast(json.message, {
+        type: "error",
+      });
+    }
+    dispatch(stopLoading());
+  };
+
+  const handleFullWatch = async (post) => {
+    console.log(post, "POST");
+    if (user?.token && post?.power > post?.powerTransferred) {
+      const response = await fetch("/api/video/addPowerToAccount", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + user.token,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          power: 1,
+          videoId: post?.id,
+        }),
+      });
+
+      if (response.status === 200) {
+        getUserAllVideo();
+      }
+    }
+  };
+
   const renderTabContent = () => {
     if (activeTab === "likes") {
-      return <LikesList likeVideos={likeVideos} />;
+      return (
+        <LikesList
+          likeVideos={allLikedVideos}
+          handleFullWatch={handleFullWatch}
+        />
+      );
     } else if (activeTab === "video") {
-      return <VideoList videos={userAllVideos} />;
+      return (
+        <VideoList videos={userAllVideos} handleFullWatch={handleFullWatch} />
+      );
     } else {
       return (
         <>
-          {/* <div className="empowers">
+          <div className="empowers">
             <div className="empowers_text">
               <h4
                 onClick={showEmpowerers}
                 style={{ fontWeight: showEmpowerersTab ? "900" : "700" }}
               >
-                {empowerers.length} EMPOWERERS
+                {userEmpower.length} EMPOWERERS
               </h4>
               <h4
                 onClick={showEmpowering}
                 style={{ fontWeight: showEmpowerersTab ? "700" : "900" }}
               >
-                {empowering.length} EMPOWERING
+                {userEmpowering.length} EMPOWERING
               </h4>
             </div>
           </div>
-          <div className="searchs">
+          {/* <div className="searchs">
             <input type="text" placeholder="Name Search" />
-          </div>
+          </div> */}
           <p className="power_p">
             {showEmpowerersTab ? (
               <>
                 Your EMPOWERERS Provide You{" "}
-                {parseFloat(empowerers.length * 0.1).toFixed(1)}
+                {parseFloat(userEmpower.length * 0.1).toFixed(1)}
                 <img src={PowerCoin} alt="" className="power-icon" />
                 Today
               </>
             ) : (
               <>
                 You are providing your empowerers with a sum of{" "}
-                {empowering.length * 0.1}
+                {userEmpowering.length * 0.1}
                 <img src={PowerCoin} alt="" className="power-icon" /> daily
               </>
             )}
-          </p> */}
-
-          {/* {showEmpowerersTab ? (
-            <EmpowerList empowerers={empowerers} />
+          </p>
+          {showEmpowerersTab ? (
+            <EmpowerList empowerers={userEmpower} />
           ) : (
-            <EmpowerList empowerers={empowering} />
-          )} */}
+            <EmpowerList empowerers={userEmpowering} />
+          )}
         </>
       );
     }
   };
-  
+
   return (
     <>
       <Header />
-      {isLoading ? <LoaderSpiner />:
-      <div className="plebeain_page">
-        <ProfileSection profile={userProfile} onFollow={follow} />
-        {/* <StatusSection statusArray={statusArray} /> */}
-        <div className="icons_section">
-          <div className="icons_img">
-            <img src={video} alt="video" onClick={handleVideoClick} />
-            <img src={power} alt="power" onClick={handleLikesClick} />
-            <img src={profileG} alt="" onClick={handleProfileClick} />
+      {isLoading ? (
+        <LoaderSpiner />
+      ) : (
+        <div className="plebeain_page">
+          <ProfileSection profile={userProfile} onFollow={follow} />
+          {/* <StatusSection statusArray={statusArray} /> */}
+          <div className="icons_section">
+            <div className="icons_img">
+              <img src={video} alt="video" onClick={handleVideoClick} />
+              <img src={power} alt="power" onClick={handleLikesClick} />
+              <img src={profileG} alt="" onClick={handleProfileClick} />
+            </div>
           </div>
+          {renderTabContent()}
         </div>
-        {renderTabContent()}
-      </div>
-      }
+      )}
     </>
   );
 };

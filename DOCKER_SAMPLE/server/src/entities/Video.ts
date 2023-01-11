@@ -79,7 +79,7 @@ export class Video extends BaseEntity implements VideoType {
 
     static async getVideosWithoutAccount(accountId: number): Promise<Video[]> {
         return await Video.find({
-            where: { account: { id: Not(accountId) } },
+            where: { account: { id: Not(accountId) }, power : Not(0) },
             relations: ['account']
         });
     }

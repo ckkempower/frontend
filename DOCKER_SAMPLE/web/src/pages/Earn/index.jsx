@@ -64,17 +64,14 @@ const Earn = () => {
 
   const getUserProfile = async () => {
     dispatch(startLoading());
-    const resUpload = await fetch(
-      `/api/account/${user?.account?.id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + user?.token,
-        },
-      }
-    );
+    const resUpload = await fetch(`/api/account/${user?.account?.id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + user?.token,
+      },
+    });
     const json = await resUpload.json();
-    dispatch(updateDetails(json));
+    dispatch(updateDetails(json?.account));
     dispatch(stopLoading());
   };
 
@@ -90,20 +87,17 @@ const Earn = () => {
       return toast("You have to login to empower");
     }
     try {
-      const response = await fetch(
-        "/api/video/addPowerToVideo",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + user.token,
-          },
-          method: "POST",
-          body: JSON.stringify({
-            power: 1,
-            videoId: post.id,
-          }),
-        }
-      );
+      const response = await fetch("/api/video/addPowerToVideo", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + user.token,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          power: 1,
+          videoId: post.id,
+        }),
+      });
       const json = await response.json();
       let updatePost = [...allPost];
       updatePost[index]["empower"] = post?.empower + 1;
@@ -120,26 +114,27 @@ const Earn = () => {
 
   const handleFullWatch = async (post, index) => {
     if (user?.token) {
-      const response = await fetch(
-        "/api/video/addPowerToAccount",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + user.token,
-          },
-          method: "POST",
-          body: JSON.stringify({
-            power: 1,
-            videoId: post.id,
-          }),
-        }
-      );
+      const response = await fetch("/api/video/addPowerToAccount", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + user.token,
+        },
+        method: "POST",
+        body: JSON.stringify({
+          power: 1,
+          videoId: post.id,
+        }),
+      });
 
       const json = await response.json();
 
       if (response.status === 200) {
-        const newPosts = [...allPost];
+        let newPosts = [...allPost];
         newPosts[index].powerTransferred += 1;
+        const post = newPosts[index].powerTransferred;
+        if (post.power === post.powerTransferred) {
+          newPosts = newPosts.filter((_, postIndex) => postIndex !== index);
+        }
         setAllPost(newPosts);
         dispatch(updateDetails({ power: json.account.power }));
       }
@@ -153,8 +148,6 @@ const Earn = () => {
     }
     navigate(`/userProfile/${userId}`);
   };
-
-  console.log(user.account, "sdfsdf");
 
   return (
     <>

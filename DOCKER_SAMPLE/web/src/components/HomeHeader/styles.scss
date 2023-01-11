@@ -11,6 +11,12 @@ header.home-header {
       height: 60px;
       object-fit: cover;
     }
+    .header-icon {
+      svg {
+        height: 53px;
+        width: 100%;
+      }
+    }
 
     p {
       font-size: 20px;
